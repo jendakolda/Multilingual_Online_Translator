@@ -14,12 +14,22 @@ CheckResult.wrong = lambda feedback: CheckResult(False, feedback)
 
 class TranslatorTest(StageTest):
     def generate(self):
-        return [TestCase(stdin='fr\nhello\n'),]
+        return [
+            TestCase(stdin='fr\nhello\n'),
+        ]
 
     def check(self, reply, attach):
-        if 'fr' in reply and 'en' in reply and 'hello' in reply:
+        if '200 OK' not in reply:
+            return CheckResult.wrong("There isn't internet connection identificator.")
+
+        print(reply.count('['))
+        print('Translation' in reply)
+
+        if reply.count('[') >= 2 and 'Translation' in reply:
             return CheckResult.correct()
-        return CheckResult.wrong('Try to print both languages and word you want to translate.')
+
+        return CheckResult.wrong("Try to print lists of translations in both "
+                                 "stages or not to delete first word 'Translation' from it")
 
 
 if __name__ == '__main__':
