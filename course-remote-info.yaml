@@ -3,13 +3,14 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/311846/additional_files.json
   is_template_based: false
   use_ide: true
+update_date: Mon, 02 Nov 2020 10:35:55 UTC
 stages:
 - id: 543
   step: 8970
   is_completed: true
 - id: 544
   step: 8971
-  is_completed: false
+  is_completed: true
 - id: 545
   step: 8972
   is_completed: false
@@ -98,6 +99,8 @@ topics:
     theory_id: 6740
   - title: HTTP messages
     theory_id: 6752
+  - title: XML
+    theory_id: 6901
   - title: Load module
     theory_id: 6019
   - title: Create module
@@ -110,6 +113,8 @@ topics:
     theory_id: 6230
   - title: 'Requests: retrieving data'
     theory_id: 8603
+  - title: BeautifulSoup
+    theory_id: 10209
   - title: HTML basics
     theory_id: 6434
   - title: Tags and attributes

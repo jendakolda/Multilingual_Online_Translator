@@ -18,21 +18,26 @@ class Translator(object):
         return f'https://context.reverso.net/translation/{Translator.pairs[self.language]}/{self.word}'
 
     def main(self):
-
         response = requests.get(Translator.form_request(self), headers={'User-Agent': Translator.user_agent})
-        src = response.content
-        web_data = BeautifulSoup(src, 'html.parser')
-        translations = []
-        words = web_data.find('div', attrs={'id': 'translations-content'})
-        translations = [word.text.strip('\n "') for word in words]
-        # for word in words:
-        #     print(word.text)
-        print(words)
-
-
+        web_data = BeautifulSoup(response.content, 'lxml')
         print(response.status_code, 'OK' if response else 'Denied')
         print('Translations')
-        # print(translations)
+        words = web_data.find('div', attrs={'id': 'translations-content'})
+        translations = words.find_all('a')
+        # translations = [word.text.replace(' ', '').replace('\n', '') for word in words]
+        synonyms = list()
+        for word in translations:
+            synonyms.append(word.text.strip())
+        print(synonyms)
+        # examps = web_data.find('section', attrs={'id': 'examples-content'})
+        # sentences = examps.find_all('div', attrs={'class': 'example'})
+        # examples = list()
+        # for sentence in sentences:
+        #     examples.append(sentence.text.strip())
+        phrases = web_data.find_all('div', {'class': 'src ltr'})
+        phrases += web_data.find_all('div', {'class': 'trg ltr'})
+        lst_phrases = [phrase.text.strip() for phrase in phrases]
+        print(lst_phrases)
 
 
 Translator().main()

@@ -46,26 +46,10 @@ files:
   text: |
     print('Hello, World!')
   learner_created: false
-- name: translator/__init__.py
-  visible: true
-  learner_created: true
 feedback_link: https://hyperskill.org/projects/99/stages/544/implement
-status: Failed
+status: Solved
 feedback:
-  message: |-
-    Exception in test #1
-
-    Traceback (most recent call last):
-      File "translator.py", line 34, in <module>
-        Translator().main()
-      File "translator.py", line 22, in main
-        response = requests.get(Translator.form_request(self), headers={'User-Agent': Translator.user_agent})
-    requests.exceptions.ConnectionError: HTTPSConnectionPool(host='context.reverso.net', port=443): Max retries exceeded with url: /translation/english-french/hello (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x000002B2152252E0>: Failed to establish a new connection: [Errno 11001] getaddrinfo failed'))
-
-    Please find below the output of your program during this failed test.
-
-    ---
-
-    You chose "fr" as a language to translate "hello".
-  time: Sun, 25 Oct 2020 10:21:58 UTC
-record: -1
+  message: Congratulations! Continue on <a href="https://hyperskill.org/projects/99/stages/544/implement">JetBrains
+    Academy</a>
+  time: Mon, 02 Nov 2020 11:55:24 UTC
+record: 2
