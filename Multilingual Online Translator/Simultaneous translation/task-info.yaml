@@ -35,12 +35,12 @@ files:
 
             if 'arabic translations' not in reply:
                 return CheckResult.wrong("There are no \'Arabic translations\' in your output!")
-            if 'arabic examples' not in reply:
-                return CheckResult.wrong("There are no \'Arabic examples\' in your output!")
+            if 'arabic example' not in reply:
+                return CheckResult.wrong("There is no \'Arabic example\' in your output!")
             if 'russian translations' not in reply:
                 return CheckResult.wrong("There are no \'Russian translations\' in your output!")
-            if 'russian examples' not in reply:
-                return CheckResult.wrong("There are no \'Russian examples\' in your output!")
+            if 'russian example' not in reply:
+                return CheckResult.wrong("There is no \'Russian example\' in your output!")
 
             file_name = 'hello.txt'
 
@@ -49,13 +49,18 @@ files:
                     "Looks like you didn't create a file named WORD.txt where WORD is word you want to translate.")
 
             with open(file_name) as file:
-                output = file.read().lower()
+                try:
+                    output = file.read().lower()
+                except UnicodeDecodeError:
+                    return CheckResult.wrong("UnicodeDecodeError occurred while reading your file. \n"
+                                             "Perhaps you used the wrong encoding? Please, use utf-8 encoding.")
+
                 if 'spanish translation' not in output:
                     return CheckResult.wrong("There are no \'Spanish translations\' in the output file!")
                 if 'spanish example' not in output:
-                    return CheckResult.wrong("There are no \'Spanish examples\' in the output file!")
+                    return CheckResult.wrong("There is no \'Spanish example\' in the output file!")
                 if 'turkish example' not in output:
-                    return CheckResult.wrong("There are no \'Turkish examples\' in the output file!")
+                    return CheckResult.wrong("There is no \'Turkish example\' in the output file!")
 
             return CheckResult.correct()
 

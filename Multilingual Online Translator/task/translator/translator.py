@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 class Translator(object):
     pairs = {'en': 'french-english', 'fr': 'english-french'}
+    lang_shorts = {'en': 'English', 'fr': 'French'}
     user_agent = 'Mozilla/5.0'
 
     def __init__(self):
@@ -20,24 +21,26 @@ class Translator(object):
     def main(self):
         response = requests.get(Translator.form_request(self), headers={'User-Agent': Translator.user_agent})
         web_data = BeautifulSoup(response.content, 'lxml')
-        print(response.status_code, 'OK' if response else 'Denied')
-        print('Translations')
         words = web_data.find('div', attrs={'id': 'translations-content'})
         translations = words.find_all('a')
         # translations = [word.text.replace(' ', '').replace('\n', '') for word in words]
         synonyms = list()
         for word in translations:
             synonyms.append(word.text.strip())
-        print(synonyms)
-        # examps = web_data.find('section', attrs={'id': 'examples-content'})
-        # sentences = examps.find_all('div', attrs={'class': 'example'})
-        # examples = list()
-        # for sentence in sentences:
-        #     examples.append(sentence.text.strip())
-        phrases = web_data.find_all('div', {'class': 'src ltr'})
-        phrases += web_data.find_all('div', {'class': 'trg ltr'})
-        lst_phrases = [phrase.text.strip() for phrase in phrases]
-        print(lst_phrases)
+
+
+        src_phrases = web_data.find_all("div", {"class": "src ltr"})
+        tran_phrases = web_data.find_all("div", {"class": "trg ltr"})
+
+        lst_src_phrases = [phrase.text.strip() for phrase in src_phrases]
+        lst_tran_phrases = [phrase.text.strip() for phrase in tran_phrases]
+
+        print(response.status_code, 'OK\n' if response else 'Denied')
+        print(f'Context examples:\n\n{Translator.lang_shorts[self.language]} Translations:')
+        print(*synonyms[:5], sep='\n')
+
+        print(f'\n{Translator.lang_shorts[self.language]} Examples:\n')
+        print(*[lst_src_phrases[i] + '\n' + lst_tran_phrases[i] for i in range(5)], sep='\n')
 
 
 Translator().main()
