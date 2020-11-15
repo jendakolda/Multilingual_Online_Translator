@@ -13,17 +13,22 @@ class Translator(object):
         args = sys.argv
         try:
             self.src_lang, self.tran_lang, self.word = args[1:]
-            if self.tran_lang == 'all':
+            if self.src_lang.title() in Translator.langs.values() and self.tran_lang.lower() == 'all':
                 self.tran_lang = list(v for v in Translator.langs.values())
                 self.length = 1
-            else:
+            elif self.src_lang.title() in Translator.langs.values() \
+                    and self.tran_lang.title() in Translator.langs.values():
                 self.tran_lang = [self.tran_lang]
                 self.length = 5
-                
+            elif self.tran_lang.title() not in Translator.langs.values():
+                print(f'Sorry, the program doesn\'t support {self.tran_lang}')
+                exit()
+            else:
+                print('something wrong with input')
+
         except ValueError:
             print('Hello, you\'re welcome to the translator. Translator supports: ')
             print(*[str(k) + '. ' + v for k, v in Translator.langs.items()], sep='\n')
-            # print(f'You chose "{self.language}" as a language to translate "{self.word}".')
             while True:
                 try:
                     self.src_lang = Translator.langs[int(input('Type the number of your language:\n '))]
@@ -52,16 +57,18 @@ class Translator(object):
     def form_request(self, lang):
         return f'https://context.reverso.net/translation/{self.src_lang.lower()}-{lang.lower()}/{self.word}'
 
-    def main(self):
-        self.output_file = open(f'{self.word}.txt', 'w', encoding='utf-8')
-        for lang in self.tran_lang:
-            self.get_translation(lang)
-        self.output_file.close()
-
     def get_translation(self, lang):
         if self.src_lang.lower() == lang.lower():
             return
         response = requests.get(Translator.form_request(self, lang), headers={'User-Agent': Translator.user_agent})
+
+        if response.status_code == 404:
+            print(f'Sorry, unable to find {self.word}')
+            exit()
+        elif response.status_code != 200:
+            print('Something went wrong with your internet connection')
+            exit()
+
         web_data = BeautifulSoup(response.content, 'lxml')
         words = web_data.find('div', attrs={'id': 'translations-content'})
         translations = words.find_all('a')
@@ -73,11 +80,10 @@ class Translator(object):
         lst_src_phrases = [phrase.text.strip() for phrase in src_phrases]
         lst_tran_phrases = [phrase.text.strip() for phrase in tran_phrases]
 
-        print(response.status_code, 'OK\n' if response else 'Denied')
         print(f'Context examples:\n\n{lang.capitalize()} Translations:')
         self.output_file.write(f'\n\n{lang.capitalize()} Translations:\n')
         print(*synonyms[:self.length], sep='\n')
-        # self.output_file.writelines(*synonyms[:self.length])
+
         for i in range(self.length):
             self.output_file.write(synonyms[i] + '\n')
 
@@ -88,6 +94,12 @@ class Translator(object):
             for i in range(self.length):
                 self.output_file.write(lst_src_phrases[i] + '\n')
                 self.output_file.write(lst_tran_phrases[i] + '\n')
+
+    def main(self):
+        self.output_file = open(f'{self.word}.txt', 'w', encoding='utf-8')
+        for lang in self.tran_lang:
+            self.get_translation(lang)
+        self.output_file.close()
 
 
 Translator().main()
